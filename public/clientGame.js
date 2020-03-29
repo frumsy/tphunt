@@ -3,9 +3,9 @@ var gs = gameSettings;
 
 var keyboard = new THREEx.KeyboardState();
 
-function player(x,y, name){
+function player(x,y, name, c){
   this.r = gs.playerSize;
-	//this.c = c;//color 
+	this.c = c;//color 
 	this.name = name;
   //this.id = id;
   this.x = x;
@@ -33,7 +33,7 @@ class MyPlayer {
     this.y_dir = 0;
     this.input = [];
     this.client_has_input = false;
-    this.c = gs.defaultColor;
+    this.c = gs.defaultColor;//this gets a random hex value in the color range
     this.name = name;
     this.id = id;
     this.x = x;
@@ -43,7 +43,7 @@ class MyPlayer {
 
 function enterGame(){
   let name = input.value(); 
-  let color = gs.defaultColor; 
+  let color = '#'+(Math.random()*0xFFFFFF<<0).toString(16); 
   data = {'name': name, 'color': color};
 	socket.emit('joinRequest', data);//join request
 
@@ -106,7 +106,7 @@ function setup() {
 
   socket.on('joined', function(data){//initialize player this may not be your player
     if(socket.id == data.id){
-    myPlayer = new MyPlayer(data.id, data.x, data.y, data.name);
+    myPlayer = new MyPlayer(data.id, data.x, data.y, data.name, data.c);
     }
     walls = data.walls;
     console.log('you joined the game');  
@@ -184,7 +184,6 @@ function draw() {
 
   playerInput();
   movePlayers();
-
 
   drawWalls(walls);
   drawPlayers(players);

@@ -51,7 +51,7 @@ function newConnection(socket){
         players[socket.id] = newPlayer;
         data = {'walls': terrain, 'id': socket.id,
                 'x': newPlayer.x, 'y': newPlayer.y,
-                'name': newPlayer.name
+                'name': newPlayer.name, 'c': newPlayer.c
         };
         io.sockets.emit('joined', data);
         p('new connection ' + socket.id);
