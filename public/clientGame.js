@@ -53,6 +53,15 @@ function enterGame(){
 	p2.remove();
 }
 
+function drawBlobs(blobs){
+  fill(color('green'));
+  blobs.forEach( (b) => {
+    r = Math.floor((Math.random() * 30) + 3);
+    ellipse(b.p1[0],b.p1[1],r,r);
+    ellipse(b.p2[0],b.p2[1],r,r);
+  });
+}
+
 function drawWalls(walls){
   fill(color('green'));
   walls.forEach( (w) => {
@@ -171,7 +180,8 @@ function movePlayers(){
       move(players[i]);//function that moves a specific player
     //players[i].constrain
   }
-  wallCollisions(myPlayer);
+  blobCollisions(myPlayer);
+  //wallCollisions(myPlayer);
     var data = {
     	x: myPlayer.x,
     	y: myPlayer.y,
@@ -183,6 +193,19 @@ function movePlayers(){
 
 function btw(p, low, high){
   return p > low && p < high;
+}
+
+function blobCollisions(player){
+  walls.forEach( (w) => {
+    if(Math.abs(w.p1[0] - player.x) < 10 && Math.abs(w.p1[1] - player.y) < 10){
+      window.location.reload(false);
+      console.log('hit-----');
+    }
+    if(Math.abs(w.p2[0] - player.x) < 10 && Math.abs(w.p2[1] - player.y) < 10){
+      window.location.reload(false);
+      console.log('hit');
+    }
+  });
 }
 
 function wallCollisions(players){
@@ -210,7 +233,7 @@ function draw() {
 
   playerInput();
   movePlayers();
-
-  drawWalls(walls);
+  drawBlobs(walls);
+  //drawWalls(walls);
   drawPlayers(players);
 }
