@@ -65,12 +65,14 @@ function drawBlobs(blobs){
 function drawWalls(walls){
   fill(color('green'));
   walls.forEach( (w) => {
-    let x1 = w.p1[0];
-    let y1 = w.p1[1];
+    wleft = Math.min(w.p1[0], w.p2[0]);
+    wright = Math.max(w.p1[0], w.p2[0]);
+    wTop = Math.min(w.p1[1], w.p2[1]);
+    wBottom = Math.max(w.p1[1], w.p2[1]);
 
     let rectW = Math.abs(w.p2[0] - w.p1[0]);
     let rectH = Math.abs(w.p2[1] - w.p1[1]);
-    rect(x1,y1, rectW, rectH);
+    rect(wleft, wTop, rectW, rectH);
   });
 }
 
@@ -180,9 +182,11 @@ function movePlayers(){
       move(players[i]);//function that moves a specific player
     //players[i].constrain
   }
-  blobCollisions(myPlayer);
-  //wallCollisions(myPlayer);
-    var data = {
+
+  //blobCollisions(myPlayer);
+  wallCollisions(myPlayer);
+  
+  var data = {
     	x: myPlayer.x,
     	y: myPlayer.y,
       id: myPlayer.id,
@@ -218,13 +222,23 @@ function wallCollisions(players){
     wBottom = Math.max(w.p1[1], w.p2[1]);
 
     if(btw(myPlayer.y, wTop, wBottom)){//within wall y
-      if(btw(myPlayer.x + pr, wleft, wleft+error)){//coming from the wleft
+      if(btw(myPlayer.x + pr, wleft, wleft+error)){//coming from the left
         myPlayer.x = wleft - pr;
       }
-      if(btw(myPlayer.x + pr, wright, wright-error)){//coming from the wright
+      else if(btw(myPlayer.x + pr, wright, wright+error)){//coming from the right
         myPlayer.x = wright + pr;
       }
     }
+    
+    if(btw(myPlayer.x, wleft, wright)){//within wall x
+      if(btw(myPlayer.y + pr, wTop, wTop+error)){//coming from the top going down
+        myPlayer.y = wTop - pr;
+      }
+      else if(btw(myPlayer.y + pr, wBottom, wBottom+error)){
+        myPlayer.y = wBottom + pr;
+      }
+    }
+
   });
 }
 
@@ -233,7 +247,7 @@ function draw() {
 
   playerInput();
   movePlayers();
-  drawBlobs(walls);
-  //drawWalls(walls);
+  //drawBlobs(walls);
+  drawWalls(walls);
   drawPlayers(players);
 }
