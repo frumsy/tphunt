@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TpHunt</title>
+    <style> body {padding: 0; margin: 0;} </style>
+    	<!-- Load the keyboard specific code --> 
+    <script type="text/javascript" src="lib/keyboard.js"></script>
+
+            <!-- p5js for rendering 2d stuff-->     
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>	
+
+    <!-- My js game files for stuff-->     
+    <script type="text/javascript" src="gameSettings.js"></script>
+    <script type="text/javascript" src="gameCore.js"></script>
+    <script type="text/javascript" src="clientGame.js"></script>
+    
+                <!-- socket io for networking-->     
+    <script src="/socket.io/socket.io.js"></script>
+
+    <link href='https://fonts.googleapis.com/css?family=Allerta' rel='stylesheet'>
+
+     <div class="leaderBox">
+        <h2>Leaderboard</h2>
+     </div>
+
+     <style>
+
+     div.leaderBox{
+         position: absolute;
+         color: white;
+         background: black;
+         height: 30%;
+         border: 40px solid black;
+         border-radius: 15px;
+         -moz-border-radius: 15px;
+         opacity: 0.3;
+         filter: alpha(opacity=30); /* For IE8 and earlier */
+         right: 0%;
+         top: 0%;
+     }
+      p.greet{
+        font-family: 'Allerta';font-size: 32px;
+        color: #999;
+        border-radius: 20px;
+        background: #303a45;
+        padding: 20px; 
+        width: 500px;
+        height: 350px; 
+        text-align: center;
+        padding-top: 25px !important;
+      }
+      p.desc{
+        font-family: 'Allerta';font-size: 16px;
+        color: #999;
+        padding: 20px; 
+        text-align: center;
+      }
+      button{
+        font-family: 'Allerta';font-size: 14px;
+        color: #dbdbdb;
+        width: 150px;
+        height: 45px;
+        border-radius: 25px;
+        transition-duration: 0.4s;
+        background-color: #4CAF50;
+        outline:none;
+        border: none;
+      }
+      button:hover {
+        font-family: 'Allerta';font-size: 14px;
+        background-color: #64bd68; /* Green */
+        color: white;
+        outline:none;
+      }
+      input{
+        font-family: 'Allerta';font-size: 14px;
+        color: #999;
+        width: 275px;
+        height: 45px;
+        border-radius: 25px;
+        background-color: #252d36;
+        outline: none;
+        border: 0px solid;
+        padding-left: 20px;
+        transition-duration: 0.5s;
+      }
+      input:focus{
+        outline: #4CAF50;
+        border: 1px solid #4CAF50;
+      }
+    </style>
+
+  </head>
+  <body>
+  </body>
+</html>	
