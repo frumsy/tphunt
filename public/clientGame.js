@@ -159,7 +159,8 @@ function playerInput(){
   let speed = 3;
   myPlayer.x += x_dir*speed;
   myPlayer.y += y_dir*speed;
-  
+  myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, width);
+  myPlayer.y = constrain(myPlayer.y, 0+gs.playerSize/2, height);
   }
 }
 
@@ -170,6 +171,7 @@ function movePlayers(){
       move(players[i]);//function that moves a specific player
     //players[i].constrain
   }
+  wallCollisions(myPlayer);
     var data = {
     	x: myPlayer.x,
     	y: myPlayer.y,
@@ -177,6 +179,30 @@ function movePlayers(){
   }
   //console.log(data);
   socket.emit('playerUpdate', data);
+}
+
+function btw(p, low, high){
+  return p > low && p < high;
+}
+
+function wallCollisions(players){
+  let pr = gs.playerSize/2;//players radius
+  let error = 5;//error is used to account for things like network lag or anything not accounted for and make sure the player doesn't go past the bound 
+  walls.forEach( (w) => {
+    wleft = Math.min(w.p1[0], w.p2[0]);
+    wright = Math.max(w.p1[0], w.p2[0]);
+    wTop = Math.min(w.p1[1], w.p2[1]);
+    wBottom = Math.max(w.p1[1], w.p2[1]);
+
+    if(btw(myPlayer.y, wTop, wBottom)){//within wall y
+      if(btw(myPlayer.x + pr, wleft, wleft+error)){//coming from the wleft
+        myPlayer.x = wleft - pr;
+      }
+      if(btw(myPlayer.x + pr, wright, wright-error)){//coming from the wright
+        myPlayer.x = wright + pr;
+      }
+    }
+  });
 }
 
 function draw() {
@@ -188,6 +214,3 @@ function draw() {
   drawWalls(walls);
   drawPlayers(players);
 }
-
-
-
