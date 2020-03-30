@@ -114,13 +114,15 @@ var papers = {};
 
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
 function setup() {
-  socket = io.connect('http://localhost:3002');
+  //socket = io.connect('http://localhost:3002');
+  socket = io.connect('http://45.79.149.119:3000/');
 
 	createCanvas(windowWidth, windowHeight);
   joinscreen();
   
   socket.on('heartbeat', function(data){
     players = data.players;
+    papers = data.papers;
   });
 
   socket.on('joined', function(data){//initialize player this may not be your player
@@ -128,18 +130,9 @@ function setup() {
     myPlayer = new MyPlayer(data.id, data.x, data.y, data.name, data.c);
     }
     walls = data.walls;
-    papers = data.papers;
+    //papers = data.papers;
     console.log('you joined the game');  
   });
-
-  socket.on('paperUpdate', paperUpdate);
-  function paperUpdate(data){
-    Object.keys(papers).forEach( (key) =>{
-      if(papers[key][2] == data.newPaper[2]){
-        papers[key] = data.newPaper;
-      }
-    });
-  }
 
   socket.on('disconnect', function(data){
     console.log(data);
@@ -219,17 +212,11 @@ function btw(p, low, high){
 }
 
 function paperCollisions(player){
-  let scored = false;
-  Object.keys(papers).forEach( (key) =>{
+  Object.keys(papers).some( (key) =>{
     if(Math.abs(papers[key][0] - player.x) < 10 && Math.abs(papers[key][1] - player.y) < 10){
-      scored = papers[key][2];
-    }
-    if(Math.abs(papers[key][0] - player.x) < 10 && Math.abs(papers[key][1] - player.y) < 10){
-      scored = papers[key][2];
-    }
-    if(scored){
-      socket.emit('scored', {'paperid': scored})
       console.log('you scored!');
+      socket.emit('scored', {'paperid': papers[key][2]})
+      return papers[key][2]; 
     }
   });
 }
@@ -282,7 +269,6 @@ function drawPapers(){
   Object.keys(papers).forEach( (key) =>{
     fill(color('red'));
     ellipse(papers[key][0], papers[key][1], 16, 16);
-    //rect(papers[key][0], papers[key][1], 16, 16);
   });
 }
 

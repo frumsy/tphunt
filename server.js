@@ -3,7 +3,7 @@ var express = require('express');
 var ss = require('./serverSettings');
 var mf = require('./myFunctions');
 var app = express();
-var server = app.listen(3002);
+var server = app.listen(3000);
 //var gs = require('./public/gameSettings');
 app.use(express.static('public'));
 
@@ -40,7 +40,7 @@ var numPlayers = ()=> Object.keys(players).length;
 function heartbeat(){
     data = {
     'players': players,
-    //'walls': terrain
+    'papers': papers
     };
     io.sockets.emit('heartbeat', data);
 }
@@ -78,7 +78,7 @@ function newConnection(socket){
     function scored(data){
         players[socket.id].score += 1;
         newPaper = [mf.rand(32, ss.mapX),mf.rand(32, ss.mapY),data.paperid]
-        socket.emit('paperUpdate', {'newPaper': newPaper})
+        papers[data.paperid] = newPaper;
     }
 
     socket.on('disconnect', disconnect); 
