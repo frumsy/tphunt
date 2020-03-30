@@ -4,6 +4,7 @@ module.exports = {
     numberTP: 30,
     heartRate: 33,
     maxPlayers: 4,
+    numberPaper: 20,
     //end of server settings
 
     //copy over some game settings that are

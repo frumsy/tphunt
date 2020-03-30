@@ -1,7 +1,12 @@
+var debug = true;
 var socket;
 var gs = gameSettings;
 
 var keyboard = new THREEx.KeyboardState();
+
+function rand(min,max){
+  return Math.floor((Math.random() * max) + min);
+}
 
 function player(x,y, name, c){
   this.r = gs.playerSize;
@@ -59,6 +64,7 @@ function drawBlobs(blobs){
     r = Math.floor((Math.random() * 30) + 3);
     ellipse(b.p1[0],b.p1[1],r,r);
     ellipse(b.p2[0],b.p2[1],r,r);
+    //ellipse(b[0],b[1],r,r);//this line is for drawing blob at paper if paper is passed in params
   });
 }
 
@@ -104,6 +110,8 @@ function joinscreen() {
 
 var walls = [];
 var players = [];
+var papers = {};
+
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
 function setup() {
   socket = io.connect('http://localhost:3002');
@@ -120,8 +128,18 @@ function setup() {
     myPlayer = new MyPlayer(data.id, data.x, data.y, data.name, data.c);
     }
     walls = data.walls;
+    papers = data.papers;
     console.log('you joined the game');  
   });
+
+  socket.on('paperUpdate', paperUpdate);
+  function paperUpdate(data){
+    Object.keys(papers).forEach( (key) =>{
+      if(papers[key][2] == data.newPaper[2]){
+        papers[key] = data.newPaper;
+      }
+    });
+  }
 
   socket.on('disconnect', function(data){
     console.log(data);
@@ -183,8 +201,9 @@ function movePlayers(){
     //players[i].constrain
   }
 
-  //blobCollisions(myPlayer);
+  blobCollisions(myPlayer);
   wallCollisions(myPlayer);
+  paperCollisions(myPlayer);
   
   var data = {
     	x: myPlayer.x,
@@ -199,14 +218,30 @@ function btw(p, low, high){
   return p > low && p < high;
 }
 
+function paperCollisions(player){
+  let scored = false;
+  Object.keys(papers).forEach( (key) =>{
+    if(Math.abs(papers[key][0] - player.x) < 10 && Math.abs(papers[key][1] - player.y) < 10){
+      scored = papers[key][2];
+    }
+    if(Math.abs(papers[key][0] - player.x) < 10 && Math.abs(papers[key][1] - player.y) < 10){
+      scored = papers[key][2];
+    }
+    if(scored){
+      socket.emit('scored', {'paperid': scored})
+      console.log('you scored!');
+    }
+  });
+}
+
 function blobCollisions(player){
   walls.forEach( (w) => {
     if(Math.abs(w.p1[0] - player.x) < 10 && Math.abs(w.p1[1] - player.y) < 10){
-      window.location.reload(false);
+      this.window.location.reload(false);
       console.log('hit-----');
     }
     if(Math.abs(w.p2[0] - player.x) < 10 && Math.abs(w.p2[1] - player.y) < 10){
-      window.location.reload(false);
+      this.window.location.reload(false);
       console.log('hit');
     }
   });
@@ -242,12 +277,22 @@ function wallCollisions(players){
   });
 }
 
+//draws the paper
+function drawPapers(){
+  Object.keys(papers).forEach( (key) =>{
+    fill(color('red'));
+    ellipse(papers[key][0], papers[key][1], 16, 16);
+    //rect(papers[key][0], papers[key][1], 16, 16);
+  });
+}
+
 function draw() {
   background(33,35,42);
 
   playerInput();
   movePlayers();
-  //drawBlobs(walls);
+  drawBlobs(walls);
   drawWalls(walls);
+  drawPapers();
   drawPlayers(players);
 }

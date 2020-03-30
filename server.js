@@ -13,6 +13,9 @@ var p = console.log;//this is for debuging
 
 //generate terain:
 var terrain = require('./getTerrain');
+var papers = Array(ss.numberPaper).fill().map( (_,idx)=>{
+    return [mf.rand(32, ss.mapX),mf.rand(32, ss.mapY), idx];
+  });
 
 var socket = require('socket.io');
 var io = socket(server);
@@ -22,6 +25,7 @@ setInterval(heartbeat, heartRate);
 
 class Player {
     constructor(id, x, y, name, color, r) {
+        this.score = 0;
         this.r = r;
         this.c = color;
         this.name = name;
@@ -49,7 +53,8 @@ function newConnection(socket){
     function playerJoined(data){//player color and name
         var newPlayer = new Player(socket.id, mf.rand(10,100), mf.rand(10,100), data.name, data.color, ss.playerSize);
         players[socket.id] = newPlayer;
-        data = {'walls': terrain, 'id': socket.id,
+        data = {'walls': terrain, 'papers': papers,
+                'id': socket.id,
                 'x': newPlayer.x, 'y': newPlayer.y,
                 'name': newPlayer.name, 'c': newPlayer.c
         };
@@ -67,6 +72,13 @@ function newConnection(socket){
         }
         //p(pid, px, py);
         //p(players[pid]);
+    }
+
+    socket.on('scored', scored);
+    function scored(data){
+        players[socket.id].score += 1;
+        newPaper = [mf.rand(32, ss.mapX),mf.rand(32, ss.mapY),data.paperid]
+        socket.emit('paperUpdate', {'newPaper': newPaper})
     }
 
     socket.on('disconnect', disconnect); 

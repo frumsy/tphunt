@@ -10,6 +10,12 @@ function range(start, end, step = 1) {
   return Array(len).fill().map((_, idx) => start + (idx * step));
 }
 
+function paper(id, x, y){
+  this.id = id;
+  this.x = x;
+  this.y = y;
+}
+
 function rand(min, max){
   return Math.floor((Math.random() * max) + min);
 }
@@ -27,7 +33,6 @@ function rand(min, max){
     function lerp(p, n, t) { var _t = Number(t); _t = (Math.max(0, Math.min(1, _t))).fixed(); return (p + _t * (n - p)).fixed(); };
     //Simple linear interpolation between 2 vectors
     function v_lerp(v,tv,t) { return { x: this.lerp(v.x, tv.x, t), y:this.lerp(v.y, tv.y, t) }; };
-
 
 module.exports.range = range;
 module.exports.rand = rand;
