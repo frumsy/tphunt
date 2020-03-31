@@ -118,6 +118,14 @@ var players = {};
 var papers = {};
 
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
+
+var paper_loadImg;// = loadImage(paperPath)
+
+function preload(){
+  let paperPath = "./paper.png";
+  paper_loadImg = loadImage(paperPath);
+}
+
 function setup() {
   socket = io.connect('http://localhost:3000');
   //socket = io.connect('http://45.79.149.119:3000/');
@@ -135,8 +143,8 @@ function setup() {
       players[key] = data.players[key];
       players[key].x = newX;//lerp
       players[key].y = newY;
-      console.log(newX, newY);
-      console.log('p',players[key]);
+      //console.log(newX, newY);
+      //console.log('p',players[key]);
     }
     else{
       players[key] = data.players[key];//new player
@@ -211,7 +219,7 @@ function playerInput(){
 
 //camera follows player and zooms in on player
 function followPlayer(player){
-  let zoomScale = 4;
+  let zoomScale = gs.zoomScale;
   scale(zoomScale);
   let divBy = 2*zoomScale;
   let playerVec = createVector(-player.x + windowWidth/divBy, -player.y + windowHeight/divBy);
@@ -301,7 +309,10 @@ function wallCollisions(players){
 function drawPapers(){
   Object.keys(papers).forEach( (key) =>{
     fill(color('red'));
-    ellipse(papers[key][0], papers[key][1], 16, 16);
+    //factor by which we move the image to allign with hitbox:
+    let moveFactor = 8; 
+    image(paper_loadImg, papers[key][0] - moveFactor, papers[key][1]- moveFactor);//image is 16 by 16
+    //ellipse(papers[key][0], papers[key][1], 16, 16);
   });
 }
 
