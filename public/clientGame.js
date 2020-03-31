@@ -114,8 +114,8 @@ var papers = {};
 
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
 function setup() {
-  //socket = io.connect('http://localhost:3002');
-  socket = io.connect('http://45.79.149.119:3000/');
+  socket = io.connect('http://localhost:3000');
+  //socket = io.connect('http://45.79.149.119:3000/');
 
 	createCanvas(windowWidth, windowHeight);
   joinscreen();
@@ -184,6 +184,17 @@ function playerInput(){
   myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, width);
   myPlayer.y = constrain(myPlayer.y, 0+gs.playerSize/2, height);
   }
+}
+
+
+//camera follows player and zooms in on player
+function followPlayer(player){
+  let zoomScale = 4;
+  scale(zoomScale);
+  let divBy = 2*zoomScale;
+  let playerVec = createVector(-player.x + windowWidth/divBy, -player.y + windowHeight/divBy);
+  translate(playerVec);
+  //translations.add(playerVec);
 }
 
 //this function may be doing too many things at once. TODO: refactor into two functions?
@@ -277,6 +288,7 @@ function draw() {
 
   playerInput();
   movePlayers();
+  followPlayer(myPlayer);
   drawBlobs(walls);
   drawWalls(walls);
   drawPapers();
