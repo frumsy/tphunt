@@ -88,7 +88,6 @@ function drawPlayers(players){
        fill(p.c);
        ellipse(p.x, p.y, p.r, p.r);
        //draw players name
-       console.log(p.r, CENTER);
        textAlign(CENTER,CENTER);
        fill(255);
        textSize(p.r);
@@ -115,7 +114,7 @@ function joinscreen() {
 }
 
 var walls = [];
-var players = [];
+var players = {};
 var papers = {};
 
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
