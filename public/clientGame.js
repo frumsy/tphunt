@@ -126,7 +126,24 @@ function setup() {
   joinscreen();
   
   socket.on('heartbeat', function(data){
-    players = data.players;
+    //there may be new players in data so we map over data.players
+    Object.keys(data.players).forEach( (key) =>{
+    if(players[key]){//if the player exists
+      let lerpNum = gs.lerpConst;
+      let newX = lerp(players[key].x, data.players[key].x, lerpNum);
+      let newY =  lerp(players[key].y, data.players[key].y, lerpNum);
+      players[key] = data.players[key];
+      players[key].x = newX;//lerp
+      players[key].y = newY;
+      console.log(newX, newY);
+      console.log('p',players[key]);
+    }
+    else{
+      players[key] = data.players[key];//new player
+    }
+      //check if the player exists already
+    });
+    //players = data.players;
     papers = data.papers;
   });
 

@@ -4,5 +4,6 @@ gameSettings = {
     defaultColor: '#64bd68',
     playerSize: 10,
     numberPaper: 20,
-    zoomMultiplier: 2.0
+    zoomMultiplier: 2.0,
+    lerpConst: 1
 };
