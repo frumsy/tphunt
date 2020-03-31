@@ -47,7 +47,7 @@ class MyPlayer {
 }
 
 function enterGame(){
-  let name = input.value(); 
+  let name = input.value().substring(0,9);
   let color = '#'+(Math.random()*0xFFFFFF<<0).toString(16); 
   data = {'name': name, 'color': color};
 	socket.emit('joinRequest', data);//join request
@@ -87,6 +87,12 @@ function drawPlayers(players){
      let p = players[key];
        fill(p.c);
        ellipse(p.x, p.y, p.r, p.r);
+       //draw players name
+       console.log(p.r, CENTER);
+       textAlign(CENTER,CENTER);
+       fill(255);
+       textSize(p.r);
+       text(p.name, p.x, p.y + p.r);
     });
 }
 
