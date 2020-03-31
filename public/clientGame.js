@@ -68,6 +68,13 @@ function drawBlobs(blobs){
   });
 }
 
+function drawField(){//draws the playing field aka boundery
+  fill(255,255,255,50);
+  //rect(0,0, gs.mapX, gs.mapY);
+  rect(0,0, gs.mapX, gs.mapY);
+  //rect(5, 5, 50, 50);
+}
+
 function drawWalls(walls){
   fill(color('green'));
   walls.forEach( (w) => {
@@ -82,6 +89,14 @@ function drawWalls(walls){
   });
 }
 
+function drawPlayerInfo(p){//p is a player
+  textAlign(CENTER,CENTER);
+  fill(255);
+  textSize(p.r);
+  let coords = '(' + p.x + ', ' + p.y + ')';
+  text(coords, p.x, p.y + p.r + p.r);
+}
+
 function drawPlayers(players){
   Object.keys(players).forEach( (key) => {
      let p = players[key];
@@ -92,6 +107,7 @@ function drawPlayers(players){
        fill(255);
        textSize(p.r);
        text(p.name, p.x, p.y + p.r);
+       debug && drawPlayerInfo(players[key]);
     });
 }
 
@@ -211,8 +227,8 @@ function playerInput(){
   let speed = 3;
   myPlayer.x += x_dir*speed;
   myPlayer.y += y_dir*speed;
-  myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, width);
-  myPlayer.y = constrain(myPlayer.y, 0+gs.playerSize/2, height);
+  myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, gs.mapX);
+  myPlayer.y = constrain(myPlayer.y, 0+gs.playerSize/2, gs.mapY);
   }
 }
 
@@ -318,12 +334,14 @@ function drawPapers(){
 
 function draw() {
   background(33,35,42);
+  //console.log(myPlayer.x,myPlayer.y);
 
   playerInput();
-  movePlayers();
+  movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
   followPlayer(myPlayer);
   drawBlobs(walls);
   drawWalls(walls);
+  debug && drawField();//draws the area you are allowed to play in
   drawPapers();
   drawPlayers(players);
 }

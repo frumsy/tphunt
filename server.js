@@ -14,7 +14,7 @@ var p = console.log;//this is for debuging
 //generate terain:
 var terrain = require('./getTerrain');
 var papers = Array(ss.numberPaper).fill().map( (_,idx)=>{
-    return [mf.rand(32, ss.mapX),mf.rand(32, ss.mapY), idx];
+    return [mf.rand(0, ss.mapX),mf.rand(0, ss.mapY), idx];
   });
 
 var socket = require('socket.io');
