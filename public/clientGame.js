@@ -5,7 +5,8 @@ var gs = gameSettings;
 var keyboard = new THREEx.KeyboardState();
 
 if(debug){
-  gs.zoomScale = 0.5;
+  gs.zoomScale = 1;
+  gs.speed = 4;
 }
 
 function rand(min,max){
