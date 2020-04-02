@@ -154,8 +154,8 @@ function setup() {
     Object.keys(data.players).forEach( (key) =>{
     if(players[key]){//if the player exists
       let lerpNum = gs.lerpConst;
-      let newX = lerp(players[key].x, data.players[key].x, lerpNum);
-      let newY =  lerp(players[key].y, data.players[key].y, lerpNum);
+      let newX = lerp(players[key].x, data.players[key].x, gs.lerpConst);
+      let newY =  lerp(players[key].y, data.players[key].y, gs.lerpConst);
       players[key] = data.players[key];
       players[key].x = newX;//lerp
       players[key].y = newY;
@@ -238,7 +238,10 @@ function followPlayer(player){
   let zoomScale = gs.zoomScale;
   scale(zoomScale);
   let divBy = 2*zoomScale;
-  let playerVec = createVector(-player.x + windowWidth/divBy, -player.y + windowHeight/divBy);
+  let playerX = -player.x + windowWidth/divBy;
+  let playerY = -player.y + windowHeight/divBy;
+  let playerVec = createVector(playerX, playerY);
+
   translate(playerVec);
   //translations.add(playerVec);
 }
