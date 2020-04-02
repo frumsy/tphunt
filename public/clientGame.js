@@ -11,7 +11,7 @@ function rand(min,max){
 function player(x,y, name, c){
   this.r = gs.playerSize;
 	this.c = c;//color 
-	this.name = name;
+  this.name = name;
   //this.id = id;
   this.x = x;
   this.y = y;
@@ -56,6 +56,18 @@ function enterGame(){
 	button.remove();
 	input.remove();
 	p2.remove();
+}
+
+function drawLeaderBoard(){
+  var Table = document.getElementById("leaderboard");
+  Table.innerHTML = "";
+  scoreBoard.forEach((s)=>{
+    let name = s[0];
+    let score = s[1];
+    let row = document.getElementById('leaderboard').insertRow(0);
+    let cell = row.insertCell(0);
+    cell.innerHTML = name + ': ' + score;
+  });
 }
 
 function drawBlobs(blobs){
@@ -132,10 +144,24 @@ function joinscreen() {
 var walls = [];
 var players = {};
 var papers = {};
+var scoreBoard = [];
 
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
 
 var paper_loadImg;// = loadImage(paperPath)
+
+function sortScores(){//ps is players
+  // Create items array
+  var items = Object.keys(players).map(function(key) {
+    return [players[key].name, players[key].score];
+  });
+
+  // Sort the array based on the second element
+  items.sort(function(first, second) {
+    return first[1] - second[1];
+  });
+  return items;
+}
 
 function preload(){
   let paperPath = "./paper.png";
@@ -158,7 +184,8 @@ function setup() {
       let newY =  lerp(players[key].y, data.players[key].y, gs.lerpConst);
       players[key] = data.players[key];
       players[key].x = newX;//lerp
-      players[key].y = newY;
+      players[key].y = newY;     
+      players[key].score = data.players[key].score;
       //console.log(newX, newY);
       //console.log('p',players[key]);
     }
@@ -167,6 +194,7 @@ function setup() {
     }
       //check if the player exists already
     });
+    scoreBoard = sortScores();//add players score to score board
     //players = data.players;
     papers = data.papers;
   });
@@ -347,4 +375,5 @@ function draw() {
   debug && drawField();//draws the area you are allowed to play in
   drawPapers();
   drawPlayers(players);
+  drawLeaderBoard();
 }

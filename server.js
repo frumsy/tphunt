@@ -36,11 +36,13 @@ class Player {
 }
 
 var players = {};
+var scores = {}
 var numPlayers = ()=> Object.keys(players).length;
 function heartbeat(){
     data = {
     'players': players,
-    'papers': papers
+    'papers': papers,
+    'scores': scores
     };
     io.sockets.emit('heartbeat', data);
 }
