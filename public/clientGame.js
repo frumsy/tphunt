@@ -208,6 +208,12 @@ function setup() {
     console.log('you joined the game');  
   });
 
+  socket.on('playerDeath', (pid)=>{
+    delete players[pid];
+    console.log(pid)
+  //io.sockets.emit('playerDeath', {'playerid:': socket.id});
+  });
+
   socket.on('disconnect', function(data){
     console.log(data);
   });

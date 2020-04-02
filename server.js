@@ -85,6 +85,7 @@ function newConnection(socket){
 
     socket.on('disconnect', disconnect); 
     function disconnect(){
+        io.sockets.emit('playerDeath', socket.id);
         delete players[socket.id];
         p('disconnect:', socket.id, 'pcount: ', numPlayers());
 
