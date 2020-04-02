@@ -5,5 +5,6 @@ gameSettings = {
     playerSize: 10,
     numberPaper: 20,
     zoomScale: 4.0,//default 4
-    lerpConst: 1
+    lerpConst: 1,
+    speed: 2,
 };

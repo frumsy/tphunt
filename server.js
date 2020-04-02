@@ -36,7 +36,7 @@ class Player {
 }
 
 var players = {};
-var scores = {}
+var scores = {};
 var numPlayers = ()=> Object.keys(players).length;
 function heartbeat(){
     data = {

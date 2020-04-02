@@ -4,6 +4,10 @@ var gs = gameSettings;
 
 var keyboard = new THREEx.KeyboardState();
 
+if(debug){
+  gs.zoomScale = 3.0;
+}
+
 function rand(min,max){
   return Math.floor((Math.random() * max) + min);
 }
@@ -258,7 +262,7 @@ function playerInput(){
     //console.log("up");
   } //up
 
-  let speed = 3;
+  let speed = gs.speed;
   myPlayer.x += x_dir*speed;
   myPlayer.y += y_dir*speed;
   myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, gs.mapX);
