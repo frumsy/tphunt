@@ -79,7 +79,7 @@ function newConnection(socket){
     socket.on('scored', scored);
     function scored(data){
         players[socket.id].score += 1;
-        newPaper = [mf.rand(32, ss.mapX),mf.rand(32, ss.mapY),data.paperid]
+        newPaper = [mf.rand(0, ss.mapX),mf.rand(0, ss.mapY),data.paperid]
         papers[data.paperid] = newPaper;
     }
 
