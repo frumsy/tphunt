@@ -6,7 +6,7 @@ var keyboard = new THREEx.KeyboardState();
 
 if(debug){
   gs.zoomScale = 1;
-  gs.speed = 3;
+  gs.speed = 13;
 }
 
 function rand(min,max){
@@ -384,26 +384,24 @@ function drawAll(){
   drawLeaderBoard();
 }
 
-var desiredSpeed = 1000.0;//1 px per
 var speedAdjustRatio;
 //draw is actually an update function and drawFunc is where drawing is done
 function draw() {
   var startFrameTime = new Date().getTime();
-  //var dTime = new Date().getTime();
   
-  //console.log(dTime);
   background(33,35,42);
-  //console.log(myPlayer.x,myPlayer.y);
-
   playerInput();
   movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
   followPlayer(myPlayer);
-  
   drawAll();
 
   var endFrameTime = new Date().getTime();
-  var dTime = (endFrameTime - startFrameTime)*1000.0;//returns difference in milliseconds
-  speedAdjustRatio = desiredSpeed/dTime;
+  var dt = endFrameTime - startFrameTime;//returns difference in milliseconds
+  var fr = getFrameRate();
+  //console.log(parseFloat(dTime));
+
+  speedAdjustRatio = float(fr*dt)/1000;
+  //console.log(speedAdjustRatio*gs.speed)
 }
 
 /*
@@ -421,7 +419,7 @@ actualVsynch * factor = vsynch
 30px/second 
 
 desired updateTime = 60;
-
+``
 c1_fps = 60
 c2_fps = 30
 
