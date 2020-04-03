@@ -5,8 +5,9 @@ var gs = gameSettings;
 var keyboard = new THREEx.KeyboardState();
 
 if(debug){
-  gs.zoomScale = 1;
-  gs.speed = 13;
+  gs.lerpConst = .5;
+  gs.zoomScale = 3;
+  gs.speed = 2;
 }
 
 function rand(min,max){
@@ -263,8 +264,7 @@ function playerInput(){
     //console.log("up");
   } //up
 
-  let speed = gs.speed * speedAdjustRatio;
-  //console.log(speedAdjustRatio);
+  let speed = gs.speed;
   myPlayer.x += x_dir*speed;
   myPlayer.y += y_dir*speed;
   myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, gs.mapX);
@@ -384,10 +384,9 @@ function drawAll(){
   drawLeaderBoard();
 }
 
-var speedAdjustRatio;
 //draw is actually an update function and drawFunc is where drawing is done
 function draw() {
-  var startFrameTime = new Date().getTime();
+  //var startFrameTime = new Date().getTime();
   
   background(33,35,42);
   playerInput();
@@ -395,38 +394,7 @@ function draw() {
   followPlayer(myPlayer);
   drawAll();
 
-  var endFrameTime = new Date().getTime();
-  var dt = endFrameTime - startFrameTime;//returns difference in milliseconds
-  var fr = getFrameRate();
-  //console.log(parseFloat(dTime));
-
-  speedAdjustRatio = float(fr*dt)/1000;
-  //console.log(speedAdjustRatio*gs.speed)
+  //var endFrameTime = new Date().getTime();
+  //var dt = endFrameTime - startFrameTime;//returns difference in milliseconds
+  getFrameRate(60);
 }
-
-/*
-
-client is running at ci_fps frames per second
-server loop is looping at a rate of heartrate
-
-deltaTime= 60px/second = 30px/second
-
-desiredSpeed = 30px/seconf
-vsynch = 30
-dt = time for one frame
-actualVsynch = dt*framerate
-actualVsynch * factor = vsynch
-30px/second 
-
-desired updateTime = 60;
-``
-c1_fps = 60
-c2_fps = 30
-
-dTime*ci_fps = updateTime
-
-
-
-
-
-*/
