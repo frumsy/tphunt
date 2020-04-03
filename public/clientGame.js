@@ -6,14 +6,14 @@ var keyboard = new THREEx.KeyboardState();
 
 if(debug){
   gs.zoomScale = 1;
-  gs.speed = 4;
+  gs.speed = 3;
 }
 
 function rand(min,max){
   return Math.floor((Math.random() * max) + min);
 }
 
-function player(x,y, name, c){
+function player(x, y, name, c){
   this.r = gs.playerSize;
 	this.c = c;//color 
   this.name = name;
@@ -263,7 +263,8 @@ function playerInput(){
     //console.log("up");
   } //up
 
-  let speed = gs.speed;
+  let speed = gs.speed * speedAdjustRatio;
+  //console.log(speedAdjustRatio);
   myPlayer.x += x_dir*speed;
   myPlayer.y += y_dir*speed;
   myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, gs.mapX);
@@ -374,13 +375,7 @@ function drawPapers(){
   });
 }
 
-function draw() {
-  background(33,35,42);
-  //console.log(myPlayer.x,myPlayer.y);
-
-  playerInput();
-  movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
-  followPlayer(myPlayer);
+function drawAll(){
   drawBlobs(walls);
   drawWalls(walls);
   debug && drawField();//draws the area you are allowed to play in
@@ -388,3 +383,52 @@ function draw() {
   drawPlayers(players);
   drawLeaderBoard();
 }
+
+var desiredSpeed = 1000.0;//1 px per
+var speedAdjustRatio;
+//draw is actually an update function and drawFunc is where drawing is done
+function draw() {
+  var startFrameTime = new Date().getTime();
+  //var dTime = new Date().getTime();
+  
+  //console.log(dTime);
+  background(33,35,42);
+  //console.log(myPlayer.x,myPlayer.y);
+
+  playerInput();
+  movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
+  followPlayer(myPlayer);
+  
+  drawAll();
+
+  var endFrameTime = new Date().getTime();
+  var dTime = (endFrameTime - startFrameTime)*1000.0;//returns difference in milliseconds
+  speedAdjustRatio = desiredSpeed/dTime;
+}
+
+/*
+
+client is running at ci_fps frames per second
+server loop is looping at a rate of heartrate
+
+deltaTime= 60px/second = 30px/second
+
+desiredSpeed = 30px/seconf
+vsynch = 30
+dt = time for one frame
+actualVsynch = dt*framerate
+actualVsynch * factor = vsynch
+30px/second 
+
+desired updateTime = 60;
+
+c1_fps = 60
+c2_fps = 30
+
+dTime*ci_fps = updateTime
+
+
+
+
+
+*/
