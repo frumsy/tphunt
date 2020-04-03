@@ -149,6 +149,7 @@ function joinscreen() {
 
 var walls = [];
 var players = {};
+var slime = {};
 var papers = {};
 var scoreBoard = [];
 
@@ -203,6 +204,8 @@ function setup() {
     scoreBoard = sortScores();//add players score to score board
     //players = data.players;
     papers = data.papers;
+    slime = data.slime;
+    //console.log("hb slime:",slime);
   });
 
   socket.on('joined', function(data){//initialize player this may not be your player
@@ -367,7 +370,6 @@ function wallCollisions(players){
 //draws the paper
 function drawPapers(){
   Object.keys(papers).forEach( (key) =>{
-    fill(color('red'));
     //factor by which we move the image to allign with hitbox:
     let moveFactor = 8; 
     image(paper_loadImg, papers[key][0] - moveFactor, papers[key][1]- moveFactor);//image is 16 by 16
@@ -375,26 +377,34 @@ function drawPapers(){
   });
 }
 
+function drawSlime(){
+  Object.keys(slime).forEach( (key)=>{
+    fill(color('red'));
+    pos = key.split(',');
+    ellipse(pos[0],pos[1], 8, 8);
+  });
+}
+
+
+
 function drawAll(){
   drawBlobs(walls);
   drawWalls(walls);
   debug && drawField();//draws the area you are allowed to play in
   drawPapers();
+  drawSlime();
   drawPlayers(players);
   drawLeaderBoard();
 }
 
+
 //draw is actually an update function and drawFunc is where drawing is done
-function draw() {
-  //var startFrameTime = new Date().getTime();
-  
+function draw() {  
   background(33,35,42);
   playerInput();
   movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
   followPlayer(myPlayer);
   drawAll();
 
-  //var endFrameTime = new Date().getTime();
-  //var dt = endFrameTime - startFrameTime;//returns difference in milliseconds
-  getFrameRate(60);
+  getFrameRate(30);
 }

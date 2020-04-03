@@ -20,8 +20,11 @@ var papers = Array(ss.numberPaper).fill().map( (_,idx)=>{
 var socket = require('socket.io');
 var io = socket(server);
 
+
+var squirtSpeed = 50;
 var heartRate = ss.heartRate;
 setInterval(heartbeat, heartRate);
+setInterval(dropSlime, heartRate);//squirtSpeed
 
 class Player {
     constructor(id, x, y, name, color, r) {
@@ -35,14 +38,37 @@ class Player {
     }
 }
 
+
+
 var players = {};
 var scores = {};
 var numPlayers = ()=> Object.keys(players).length;
+var slime = {};
+var slimeLength = 50;//TODO add this to gs later
+
+function dropSlime(){//this function is called every x seconds
+    Object.keys(players).forEach( (key) => {
+        let p = players[key];
+        slime[ [p.x,p.y] ] = slimeLength;
+    });
+    Object.keys(slime).forEach((key)=>{
+        s = slime[key];
+        s -= 1;
+        if(s == 0){
+            delete slime[key];
+        }
+        else{
+            slime[key] = s;
+        }
+    });
+}
+
 function heartbeat(){
     data = {
     'players': players,
     'papers': papers,
-    'scores': scores
+    'scores': scores,
+    'slime': slime
     };
     io.sockets.emit('heartbeat', data);
 }
