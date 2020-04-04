@@ -51,6 +51,7 @@ class MyPlayer {
     this.y = y;
     this.marked = false;
     this.health = 50;
+    this.canSpray = true;
   }
 }
 
@@ -138,12 +139,13 @@ function drawPlayers(players){
     return mousePos;
   }
 
-  var sprayLocation = undefined;
+  var sprayLocation = -1;
   function spray(player){
-    let sprayDist = 30;
+    let sprayDist = 15;
     sprayDir = [player.x_dir*sprayDist,player.y_dir*sprayDist];
-    console.log(sprayDir);
-    sprayLocation = createVector(player.x + sprayDir[0],player.y + sprayDir[1]);
+    //console.log(sprayDir);
+    sprayLocation = [player.x + sprayDir[0], player.y + sprayDir[1]];
+    
     //if I want to base it off mouse but glitchy
     // let mapCenter = createVector(windowWidth/2, windowHeight/2);
     // //let mouseVec = getMouseVector(mapCenter);
@@ -181,6 +183,7 @@ function joinscreen() {
 
 var walls = [];
 var players = {};
+var sprays = {};
 var slime = {};
 var papers = {};
 var scoreBoard = [];
@@ -218,7 +221,6 @@ function setup() {
     //there may be new players in data so we map over data.players
     Object.keys(data.players).forEach( (key) =>{
     if(players[key]){//if the player exists
-      let lerpNum = gs.lerpConst;
       let newX = lerp(players[key].x, data.players[key].x, gs.lerpConst);
       let newY =  lerp(players[key].y, data.players[key].y, gs.lerpConst);
       players[key] = data.players[key];
@@ -237,6 +239,8 @@ function setup() {
     //players = data.players;
     papers = data.papers;
     slime = data.slime;
+    sprays = data.spray;
+    //console.log(sprays);
     //console.log("hb slime:",slime);
   });
 
@@ -299,8 +303,9 @@ function playerInput(){
     //console.log("up");
   } //up
 
-  if(keyboard.pressed('F')) {
+  if(keyboard.pressed('F') && myPlayer.canSpray) {
     spray(myPlayer);
+    myPlayer.canSpray = false;
   } 
 
   let speed = gs.speed;
@@ -346,12 +351,13 @@ function movePlayers(){
     console.log('reload');
     this.window.location.reload(false); 
   }
-
+  
   var data = {
     	x: myPlayer.x,
     	y: myPlayer.y,
       id: myPlayer.id,
       marked: myPlayer.marked,
+      spray: sprayLocation
   }
   //console.log(data);
   socket.emit('playerUpdate', data);
@@ -451,9 +457,11 @@ function drawSlime(){
 }
 
 function drawSpray(){
-  if(sprayLocation != undefined){
-    ellipse(sprayLocation.x, sprayLocation.y, 20, 20);
-  //triangle(x1, y1, x2, y2, x3, y3)
+  Object.keys(sprays).forEach((key)=>{
+    ellipse(sprays[key][0],sprays[key][1], 20, 20);
+  });
+  if(sprayLocation != -1){
+    ellipse(sprayLocation[0], sprayLocation[1], 20, 20);
   }
 }
 

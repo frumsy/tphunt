@@ -45,6 +45,7 @@ var players = {};
 var scores = {};
 var numPlayers = ()=> Object.keys(players).length;
 var slime = {};
+var spray = {};
 var slimeLength = 50;//TODO add this to gs later
 
 function dropSlime(){//this function is called every x seconds
@@ -69,7 +70,8 @@ function heartbeat(){
     'players': players,
     'papers': papers,
     'scores': scores,
-    'slime': slime
+    'slime': slime,
+    'spray': spray
     };
     io.sockets.emit('heartbeat', data);
 }
@@ -99,6 +101,9 @@ function newConnection(socket){
             players[pid].x = data.x;
             players[pid].y = data.y;
             players[pid].marked = data.marked;
+            if(data.spray != -1){
+                spray[pid] = data.spray;
+            } 
         }
         //p(pid, px, py);
         //p(players[pid]);
