@@ -101,7 +101,7 @@ function newConnection(socket){
             players[pid].x = data.x;
             players[pid].y = data.y;
             players[pid].marked = data.marked;
-            if(data.spray != -1){
+            if(data.spray[0] != -1){
                 spray[pid] = data.spray;
             } 
         }
@@ -115,6 +115,22 @@ function newConnection(socket){
         newPaper = [mf.rand(0, ss.mapX),mf.rand(0, ss.mapY),data.paperid]
         papers[data.paperid] = newPaper;
     }
+    
+    // socket.on('deleteSpray', deleteSpray);
+    // function deleteSpray(data){
+    //     delete spray[data.sprayId];
+    //     console.log('deleted', data.sprayId);
+    // //socket.emit('deleteSpray', {'sprayId': key})
+    // }
+
+    // socket.on('healed', healed);
+    // function healed(data){
+    //     scores[data.healer] += 10;
+    //     let healer_name = players[data.healer].name;
+    //     let healed = players[socket.id].name;
+    //     p(healer_name +' healed ' + healed);
+    // //socket.emit('healed', {'healer': key});
+    // }
 
     socket.on('disconnect', disconnect); 
     function disconnect(){

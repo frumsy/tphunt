@@ -52,6 +52,7 @@ class MyPlayer {
     this.marked = false;
     this.health = 50;
     this.canSpray = true;
+    this.spray = [-1,-1];
   }
 }
 
@@ -139,13 +140,11 @@ function drawPlayers(players){
     return mousePos;
   }
 
-  var sprayLocation = -1;
   function spray(player){
     let sprayDist = 15;
     sprayDir = [player.x_dir*sprayDist,player.y_dir*sprayDist];
     //console.log(sprayDir);
-    sprayLocation = [player.x + sprayDir[0], player.y + sprayDir[1]];
-    
+    myPlayer.spray = [player.x + sprayDir[0], player.y + sprayDir[1], new Date().getTime()];
     //if I want to base it off mouse but glitchy
     // let mapCenter = createVector(windowWidth/2, windowHeight/2);
     // //let mouseVec = getMouseVector(mapCenter);
@@ -316,7 +315,6 @@ function playerInput(){
   }
 }
 
-
 //camera follows player and zooms in on player
 function followPlayer(player){
   let zoomScale = gs.zoomScale;
@@ -342,6 +340,7 @@ function movePlayers(){
   slimeCollisions(myPlayer);
   wallCollisions(myPlayer);
   paperCollisions(myPlayer);
+  sprayCollisions(myPlayer);
 
   //this is where I start to kill the player if marked
   if(myPlayer.marked){
@@ -352,12 +351,14 @@ function movePlayers(){
     this.window.location.reload(false); 
   }
   
+  //updateSprays();
+
   var data = {
     	x: myPlayer.x,
     	y: myPlayer.y,
       id: myPlayer.id,
       marked: myPlayer.marked,
-      spray: sprayLocation
+      spray: myPlayer.spray
   }
   //console.log(data);
   socket.emit('playerUpdate', data);
@@ -387,6 +388,30 @@ function blobCollisions(player){
       this.window.location.reload(false);
       console.log('hit');
     }
+  });
+}
+
+function sprayCollisions(player){
+  Object.keys(sprays).some( (key) =>{
+    //console.log(sprays[key][0]);
+    //console.log(sprays[key][1]);
+    
+      if(Math.abs(sprays[key][0] - player.x) < 10 && Math.abs(sprays[key][1]- player.y) < 10){
+        console.log('SPAYED');
+        myPlayer.marked = false;
+        if(myPlayer.marked && sprays[key] != player.id){
+          socket.emit('healed', {'healer': key});
+        }
+        return myPlayer.marked;
+      }
+      if(Math.abs(sprays[key][0] - player.x) < 10 && Math.abs(sprays[key][1]- player.y) < 10){  
+        if(myPlayer.marked && sprays[key] != player.id){
+          console.log('SPAYED');
+          socket.emit('healed', {'healer': key});
+        }
+        myPlayer.marked = false;
+        return myPlayer.marked; 
+      }  
   });
 }
 
@@ -457,14 +482,25 @@ function drawSlime(){
 }
 
 function drawSpray(){
+  //console.log('spray:', sprays); //{id: [coord, time]}
   Object.keys(sprays).forEach((key)=>{
-    ellipse(sprays[key][0],sprays[key][1], 20, 20);
+    let dt = (new Date().getTime()-sprays[key][2]);
+    //console.log(dt);
+    if( dt < 2000 ){//
+      ellipse(sprays[key][0], sprays[key][1], 20, 20);
+    }
+    else{
+      if(sprays[key]){
+        socket.emit('deleteSpray', {'sprayId': key})
+        delete sprays[key];//this doesn't delete it from server
+        if(key == myPlayer.id){//if the delete spray way mine
+          myPlayer.canSpray = true;
+        }
+      }
+    }
+    //ellipse(sprays[key][0][1],sprays[key][0][1], 20, 20);
   });
-  if(sprayLocation != -1){
-    ellipse(sprayLocation[0], sprayLocation[1], 20, 20);
-  }
 }
-
 
 function drawAll(){
   drawSpray();
