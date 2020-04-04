@@ -131,8 +131,38 @@ function drawPlayers(players){
     });
 }
 
+  //return vector from base to mouse position
+  function getMouseVector(base){
+    let screenMouse = createVector(mouseX, mouseY);//relative to screen
+    let mousePos = screenMouse.sub(base);//relative to base
+    return mousePos;
+  }
+
+  var sprayLocation = undefined;
+  function spray(player){
+    let sprayDist = 30;
+    sprayDir = [player.x_dir*sprayDist,player.y_dir*sprayDist];
+    console.log(sprayDir);
+    sprayLocation = createVector(player.x + sprayDir[0],player.y + sprayDir[1]);
+    //if I want to base it off mouse but glitchy
+    // let mapCenter = createVector(windowWidth/2, windowHeight/2);
+    // //let mouseVec = getMouseVector(mapCenter);
+    // //let playerVec = createVector(player.x, player.y);
+    // //let sprayVector = mouseVec.add(playerVec);
+    // let playerVec = createVector(player.x +16, player.y +16);
+    // let mouseVec = getMouseVector(mapCenter);
+    // ellipse(mouseVec.x,mouseVec.y, 33,33);
+    // //ellipse(player.x,player.y, 33,33);
+    // line(mouseVec.x,mouseVec.y, playerVec.x,playerVec.y);
+    // let sprayVector = mouseVec.sub(playerVec);
+    
+    // let  sprayDistance = 1;
+    // sprayVector.setMag(sprayDistance);
+    // sprayLocation = sprayVector; 
+  }
+
 function joinscreen() {
-  //Dashboard items for main page
+  //Dashboard items for main pagef
   greeting = createElement('p', 'Welcome to the tphunt');
   greeting.addClass('greet');
   greeting.center();
@@ -239,39 +269,43 @@ function playerInput(){
   //This takes input from the client and keeps a record,
   //It also sends the input information to the server immediately
   //as it is pressed. It also tags each input with a sequence number.
-  var x_dir = 0;
-  var y_dir = 0;
+  myPlayer.x_dir = 0;
+  myPlayer.y_dir = 0;
   var input = [];
   client_has_input = false;
   
   if(keyboard.pressed('A') || keyboard.pressed('left')) {
-    x_dir = -1;
+    myPlayer.x_dir = -1;
     input.push('l');
     //console.log("left");
   } //left
   
   if(keyboard.pressed('D') || keyboard.pressed('right')) {
-    x_dir = 1;
+    myPlayer.x_dir = 1;
 
     input.push('r');
     //console.log("right");
   } //right
   
   if(keyboard.pressed('S') || keyboard.pressed('down')) {
-    y_dir = 1;
+    myPlayer.y_dir = 1;
     input.push('d');
     //console.log("down");
   } //down
   
   if(keyboard.pressed('W') || keyboard.pressed('up')) {
-    y_dir = -1;
+    myPlayer.y_dir = -1;
     input.push('u');
     //console.log("up");
   } //up
 
+  if(keyboard.pressed('F')) {
+    spray(myPlayer);
+  } 
+
   let speed = gs.speed;
-  myPlayer.x += x_dir*speed;
-  myPlayer.y += y_dir*speed;
+  myPlayer.x += myPlayer.x_dir*speed;
+  myPlayer.y += myPlayer.y_dir*speed;
   myPlayer.x = constrain(myPlayer.x, 0+gs.playerSize/2, gs.mapX);
   myPlayer.y = constrain(myPlayer.y, 0+gs.playerSize/2, gs.mapY);
   }
@@ -416,9 +450,16 @@ function drawSlime(){
   });
 }
 
+function drawSpray(){
+  if(sprayLocation != undefined){
+    ellipse(sprayLocation.x, sprayLocation.y, 20, 20);
+  //triangle(x1, y1, x2, y2, x3, y3)
+  }
+}
 
 
 function drawAll(){
+  drawSpray();
   drawBlobs(walls);
   drawWalls(walls);
   debug && drawField();//draws the area you are allowed to play in
@@ -432,9 +473,9 @@ function drawAll(){
 //draw is actually an update function and drawFunc is where drawing is done
 function draw() {  
   background(33,35,42);
+  followPlayer(myPlayer);
   playerInput();
   movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
-  followPlayer(myPlayer);
   drawAll();
 
   getFrameRate(30);
