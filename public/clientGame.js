@@ -298,6 +298,7 @@ function movePlayers(){
   }
 
   blobCollisions(myPlayer);
+  slimeCollisions(myPlayer);
   wallCollisions(myPlayer);
   paperCollisions(myPlayer);
   
@@ -333,6 +334,20 @@ function blobCollisions(player){
     if(Math.abs(w.p2[0] - player.x) < 10 && Math.abs(w.p2[1] - player.y) < 10){
       this.window.location.reload(false);
       console.log('hit');
+    }
+  });
+}
+
+function slimeCollisions(player){
+  Object.keys(slime).some( (key) =>{
+    let vals = key.split(',');
+    if(vals[2] != player.id){
+      if(Math.abs(vals[0] - player.x) < 10 && Math.abs(vals[1] - player.y) < 10){
+        console.log('hit slime ' + vals[2]);
+      }
+      if(Math.abs(vals[0] - player.x) < 10 && Math.abs(vals[1] - player.y) < 10){  
+        console.log('hit slime ' + vals[2]);
+      }  
     }
   });
 }
