@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 var socket;
 var gs = gameSettings;
 
@@ -379,9 +379,11 @@ function drawPapers(){
 
 function drawSlime(){
   Object.keys(slime).forEach( (key)=>{
-    fill(color('red'));
+    noStroke();
+    fill(color('green'));
     pos = key.split(',');
     ellipse(pos[0],pos[1], 8, 8);
+    stroke(1);
   });
 }
 

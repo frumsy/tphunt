@@ -49,7 +49,7 @@ var slimeLength = 50;//TODO add this to gs later
 function dropSlime(){//this function is called every x seconds
     Object.keys(players).forEach( (key) => {
         let p = players[key];
-        slime[ [p.x,p.y] ] = slimeLength;
+        slime[ [p.x,p.y, p.id] ] = slimeLength;
     });
     Object.keys(slime).forEach((key)=>{
         s = slime[key];
