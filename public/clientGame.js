@@ -49,6 +49,8 @@ class MyPlayer {
     this.id = id;
     this.x = x;
     this.y = y;
+    this.marked = false;
+    this.health = 50;
   }
 }
 
@@ -301,11 +303,21 @@ function movePlayers(){
   slimeCollisions(myPlayer);
   wallCollisions(myPlayer);
   paperCollisions(myPlayer);
-  
+
+  //this is where I start to kill the player if marked
+  if(myPlayer.marked){
+    myPlayer.health -= 1;
+  }
+  if(myPlayer.health <= 0){
+    console.log('reload');
+    this.window.location.reload(false); 
+  }
+
   var data = {
     	x: myPlayer.x,
     	y: myPlayer.y,
       id: myPlayer.id,
+      marked: myPlayer.marked,
   }
   //console.log(data);
   socket.emit('playerUpdate', data);
@@ -343,10 +355,12 @@ function slimeCollisions(player){
     let vals = key.split(',');
     if(vals[2] != player.id){
       if(Math.abs(vals[0] - player.x) < 10 && Math.abs(vals[1] - player.y) < 10){
-        console.log('hit slime ' + vals[2]);
+        //console.log('hit slime ' + vals[2]);
+        myPlayer.marked = true;
       }
       if(Math.abs(vals[0] - player.x) < 10 && Math.abs(vals[1] - player.y) < 10){  
-        console.log('hit slime ' + vals[2]);
+        //console.log('hit slime ' + vals[2]);
+        myPlayer.marked = true;
       }  
     }
   });

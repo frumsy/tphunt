@@ -35,6 +35,7 @@ class Player {
         this.id = id;
         this.x = x;
         this.y = y;
+        this.marked = false;
     }
 }
 
@@ -94,9 +95,10 @@ function newConnection(socket){
     socket.on('playerUpdate', update);
     function update(data){
         let pid = data.id;
-        if(pid == socket.id && players[pid]){
+        if(pid == socket.id && players[pid]){//if the player id is the socket sending, and pid is valid
             players[pid].x = data.x;
-            players[pid].y = data.y;    
+            players[pid].y = data.y;
+            players[pid].marked = data.marked;
         }
         //p(pid, px, py);
         //p(players[pid]);
