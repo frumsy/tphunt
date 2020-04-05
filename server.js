@@ -45,7 +45,7 @@ var players = {};
 var scores = {};
 var numPlayers = ()=> Object.keys(players).length;
 var slime = {};
-var spray = {};
+var sprays = {};
 var slimeLength = 50;//TODO add this to gs later
 
 function dropSlime(){//this function is called every x seconds
@@ -71,7 +71,7 @@ function heartbeat(){
     'papers': papers,
     'scores': scores,
     'slime': slime,
-    'spray': spray
+    'spray': sprays
     };
     io.sockets.emit('heartbeat', data);
 }
@@ -102,7 +102,7 @@ function newConnection(socket){
             players[pid].y = data.y;
             players[pid].marked = data.marked;
             if(data.spray[0] != -1){
-                spray[pid] = data.spray;
+                sprays[pid] = data.spray;
             } 
         }
         //p(pid, px, py);
@@ -111,17 +111,21 @@ function newConnection(socket){
 
     socket.on('scored', scored);
     function scored(data){
+        console.log('scored');
         players[socket.id].score += 1;
         newPaper = [mf.rand(0, ss.mapX),mf.rand(0, ss.mapY),data.paperid]
         papers[data.paperid] = newPaper;
     }
     
-    // socket.on('deleteSpray', deleteSpray);
-    // function deleteSpray(data){
-    //     delete spray[data.sprayId];
-    //     console.log('deleted', data.sprayId);
-    // //socket.emit('deleteSpray', {'sprayId': key})
-    // }
+    socket.on('deleteSpray', deleteSpray);
+    function deleteSpray(data){
+        //p(spray);
+        delete sprays[data.sprayId];
+        //p(spray);
+
+        //console.log('deleted', data.sprayId);
+    //socket.emit('deleteSpray', {'sprayId': key})
+    }
 
     // socket.on('healed', healed);
     // function healed(data){

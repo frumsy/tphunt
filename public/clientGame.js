@@ -50,7 +50,7 @@ class MyPlayer {
     this.x = x;
     this.y = y;
     this.marked = false;
-    this.health = 50;
+    this.health = 500;
     this.canSpray = true;
     this.spray = [-1,-1];
   }
@@ -393,10 +393,7 @@ function blobCollisions(player){
 
 function sprayCollisions(player){
   Object.keys(sprays).some( (key) =>{
-    //console.log(sprays[key][0]);
-    //console.log(sprays[key][1]);
-    
-      if(Math.abs(sprays[key][0] - player.x) < 10 && Math.abs(sprays[key][1]- player.y) < 10){
+      if(Math.abs(sprays[key][0] - player.x) < 10 && Math.abs(sprays[key][1]- player.y) < 10){//check for the collision
         console.log('SPAYED');
         myPlayer.marked = false;
         if(myPlayer.marked && sprays[key] != player.id){
@@ -404,14 +401,6 @@ function sprayCollisions(player){
         }
         return myPlayer.marked;
       }
-      if(Math.abs(sprays[key][0] - player.x) < 10 && Math.abs(sprays[key][1]- player.y) < 10){  
-        if(myPlayer.marked && sprays[key] != player.id){
-          console.log('SPAYED');
-          socket.emit('healed', {'healer': key});
-        }
-        myPlayer.marked = false;
-        return myPlayer.marked; 
-      }  
   });
 }
 
@@ -423,10 +412,6 @@ function slimeCollisions(player){
         //console.log('hit slime ' + vals[2]);
         myPlayer.marked = true;
       }
-      if(Math.abs(vals[0] - player.x) < 10 && Math.abs(vals[1] - player.y) < 10){  
-        //console.log('hit slime ' + vals[2]);
-        myPlayer.marked = true;
-      }  
     }
   });
 }
@@ -489,11 +474,15 @@ function drawSpray(){
     if( dt < 2000 ){//
       ellipse(sprays[key][0], sprays[key][1], 20, 20);
     }
-    else{
+    else{//delete the spray
       if(sprays[key]){
         socket.emit('deleteSpray', {'sprayId': key})
+        //console.log("before:", sprays[key]);
         delete sprays[key];//this doesn't delete it from server
+        
+        //console.log('after:',sprays[key]);
         if(key == myPlayer.id){//if the delete spray way mine
+          myPlayer.spray = [-1,-1];//
           myPlayer.canSpray = true;
         }
       }
