@@ -69,7 +69,7 @@ function heartbeat(){
     data = {
     'players': players,
     'papers': papers,
-    'scores': scores,
+    //'scores': scores,
     'slime': slime,
     'spray': sprays
     };
@@ -119,22 +119,27 @@ function newConnection(socket){
     
     socket.on('deleteSpray', deleteSpray);
     function deleteSpray(data){
-        //p(spray);
         delete sprays[data.sprayId];
-        //p(spray);
-
-        //console.log('deleted', data.sprayId);
-    //socket.emit('deleteSpray', {'sprayId': key})
     }
 
-    // socket.on('healed', healed);
-    // function healed(data){
-    //     scores[data.healer] += 10;
-    //     let healer_name = players[data.healer].name;
-    //     let healed = players[socket.id].name;
-    //     p(healer_name +' healed ' + healed);
-    // //socket.emit('healed', {'healer': key});
-    // }
+    var sprayHealedDict = {};
+    socket.on('healed', healed);
+    function healed(data){//if this function is called it's a given that the player is on a spray that's not his
+        let healer = players[data.healer];
+        let healed = players[socket.id];
+        if(healed && healer && !sprayHealedDict[healer.id]){//if we haven't set up the
+            sprayHealedDict[healer.id] = [];
+        }//assume list must then be set up
+        
+        if(healed && healer && !(sprayHealedDict[healer.id].find(id => id == healed.id)) ){//he is not in the list yet so has not been healed
+            players[data.healer].score += 15;
+            sprayHealedDict[healer.id].push(healed.id);
+            listHealed = sprayHealedDict[healer.id];
+            listHealed.push(healed.id);
+            console.log(sprayHealedDict);
+            p(healer.name +' healed ' + healed.name);
+        }
+    }
 
     socket.on('disconnect', disconnect); 
     function disconnect(){

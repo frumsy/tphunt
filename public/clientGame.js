@@ -50,9 +50,10 @@ class MyPlayer {
     this.x = x;
     this.y = y;
     this.marked = false;
-    this.health = 500;
+    this.health = 200;
     this.canSpray = true;
     this.spray = [-1,-1];
+    this.alive = true;
   }
 }
 
@@ -348,7 +349,7 @@ function movePlayers(){
   }
   if(myPlayer.health <= 0){
     console.log('reload');
-    this.window.location.reload(false); 
+    kill();
   }
   
   //updateSprays();
@@ -368,6 +369,13 @@ function btw(p, low, high){
   return p > low && p < high;
 }
 
+function kill(){
+  if(myPlayer.alive){
+    myPlayer.alive = false;
+    this.window.location.reload(false); 
+  }
+}
+
 function paperCollisions(player){
   Object.keys(papers).some( (key) =>{
     if(Math.abs(papers[key][0] - player.x) < 10 && Math.abs(papers[key][1] - player.y) < 10){
@@ -380,12 +388,12 @@ function paperCollisions(player){
 
 function blobCollisions(player){
   walls.forEach( (w) => {
-    if(Math.abs(w.p1[0] - player.x) < 10 && Math.abs(w.p1[1] - player.y) < 10){
-      this.window.location.reload(false);
+    if(Math.abs(w.p1[0] - player.x) < 10 && Math.abs(w.p1[1] - player.y) < 10){//this is for the first point on the wall
+      kill();
       console.log('hit-----');
     }
-    if(Math.abs(w.p2[0] - player.x) < 10 && Math.abs(w.p2[1] - player.y) < 10){
-      this.window.location.reload(false);
+    if(Math.abs(w.p2[0] - player.x) < 10 && Math.abs(w.p2[1] - player.y) < 10){//this is for the second point on the wall
+      kill();
       console.log('hit');
     }
   });
@@ -395,10 +403,11 @@ function sprayCollisions(player){
   Object.keys(sprays).some( (key) =>{
       if(Math.abs(sprays[key][0] - player.x) < 10 && Math.abs(sprays[key][1]- player.y) < 10){//check for the collision
         console.log('SPAYED');
-        myPlayer.marked = false;
-        if(myPlayer.marked && sprays[key] != player.id){
+        if(myPlayer.marked && key != myPlayer.id){
+          //console.log('healed by ' + player[key].n + ' spray');
           socket.emit('healed', {'healer': key});
         }
+        myPlayer.marked = false;
         return myPlayer.marked;
       }
   });
