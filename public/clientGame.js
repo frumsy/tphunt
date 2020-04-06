@@ -10,6 +10,9 @@ if(debug){
   gs.speed = 2;
 }
 
+//TODO: delete this:::::
+//gs.zoomScale = 1;
+
 function rand(min,max){
   return Math.floor((Math.random() * max) + min);
 }
@@ -54,6 +57,7 @@ class MyPlayer {
     this.canSpray = true;
     this.spray = [-1,-1];
     this.alive = true;
+    this.skin = playerSprites[rand(1,14)];
   }
 }
 
@@ -124,7 +128,13 @@ function drawPlayers(players){
   Object.keys(players).forEach( (key) => {
      let p = players[key];
        fill(p.c);
-       ellipse(p.x, p.y, p.r, p.r);
+       let moveFactor = p.r/2; 
+       //image(p.skin, moveFactor, moveFactor);//image is 16 by 16   
+       //image(testSprite, p.x - moveFactor, p.y- moveFactor);//image is 16 by 16
+       
+       image(testSprite, p.x - moveFactor, p.y- moveFactor, p.r,p.r);
+       //ellipse(p.x, p.y, p.r, p.r);
+       
        //draw players name
        textAlign(CENTER,CENTER);
        fill(255);
@@ -172,7 +182,7 @@ function joinscreen() {
 
   p2 = createElement('p', 'Enter your Alias to Begin');
   p2.addClass('desc');
-  p2.position(width * 1.8 - p2.width >> 1, height/1.2 - p2.height >> 1);
+  p2.position(width * 1.9 - p2.width >> 1, height/1.2 - p2.height >> 1);
 
   input = createInput();
   input.position(width-input.width >> 1, height*1.1-input.height >> 1);
@@ -188,6 +198,7 @@ var sprays = {};
 var slime = {};
 var papers = {};
 var scoreBoard = [];
+var playerSprites = [];
 
 var myPlayer = new MyPlayer(id = 0);//my player is different from player because it has data about movement that needs to be applied
 
@@ -207,7 +218,13 @@ function sortScores(){//ps is players
 }
 
 function preload(){
+
   let paperPath = "./paper.png";
+  playerSprites = []
+  for(var i =1; i<=14; i++){
+    playerSprites.push(loadImage('./face_mask_emoji/' + i.toString() + '.png'));
+  }
+  testSprite = loadImage('./face_mask_emoji/1.png');
   paper_loadImg = loadImage(paperPath);
 }
 

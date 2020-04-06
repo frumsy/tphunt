@@ -6,5 +6,5 @@ gameSettings = {
     numberPaper: 20,
     zoomScale: 5.0,//default 4
     lerpConst: 0.5,
-    speed: 2,
+    speed: .9,
 };
