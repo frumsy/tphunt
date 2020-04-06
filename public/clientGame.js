@@ -513,15 +513,15 @@ function drawAll(){
 }
 
 
-function test(c){
-  //strokeWeight(10);
+function drawToMouse(c){
   fill(c);
-  let divBy = 2*gs.zoomScale;
-  let mx = -mouseX + windowWidth/divBy;
-  let my = -mouseY + windowHeight/divBy;
-
+  let zoomScale = gs.zoomScale;
+  let divBy = 2*zoomScale;
+  let center = createVector(windowWidth/2,windowHeight/2);
   original = createVector(myPlayer.x, myPlayer.y);
-  line(myPlayer.x, myPlayer.y, mouseX, mouseY);
+  pVec = createVector(myPlayer.x, myPlayer.y);
+  //z = center.sub(pVec);
+  line(center.x, center.y, mouseX, mouseY);
   ellipse(mouseX, mouseY,40,40);
   //console.log(myPlayer.x,myPlayer.y, mouseX, mouseY);
 }
@@ -529,9 +529,8 @@ function test(c){
 //draw is actually an update function and drawFunc is where drawing is done
 function draw() {  
   background(33,35,42);
-  //test(color('green'));
+  debug && drawToMouse(color('green'));
   followPlayer(myPlayer);
-  //test(color('black'));
   playerInput();
   movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
   drawAll();
