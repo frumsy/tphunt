@@ -57,7 +57,7 @@ class MyPlayer {
     this.canSpray = true;
     this.spray = [-1,-1];
     this.alive = true;
-    this.skin = playerSprites[rand(1,14)];
+    this.skin = rand(1,14);
   }
 }
 
@@ -131,8 +131,9 @@ function drawPlayers(players){
        let moveFactor = p.r/2; 
        //image(p.skin, moveFactor, moveFactor);//image is 16 by 16   
        //image(testSprite, p.x - moveFactor, p.y- moveFactor);//image is 16 by 16
-       
-       image(testSprite, p.x - moveFactor, p.y- moveFactor, p.r,p.r);
+       test = playerSprites[myPlayer.skin];
+       //image(testSprite, p.x - moveFactor, p.y- moveFactor, p.r,p.r);
+       image(test, p.x - moveFactor, p.y- moveFactor, p.r,p.r);
        //ellipse(p.x, p.y, p.r, p.r);
        
        //draw players name
@@ -222,9 +223,10 @@ function preload(){
   let paperPath = "./paper.png";
   playerSprites = []
   for(var i =1; i<=14; i++){
-    playerSprites.push(loadImage('./face_mask_emoji/' + i.toString() + '.png'));
+    x = loadImage('./face_mask_emoji/' + i.toString() + '.png');
+    playerSprites.push(x);
   }
-  testSprite = loadImage('./face_mask_emoji/1.png');
+  testSprite = loadImage('./face_mask_emoji/7.png');
   paper_loadImg = loadImage(paperPath);
 }
 
