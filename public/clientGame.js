@@ -146,6 +146,7 @@ function drawPlayers(players){
     sprayDir = [player.x_dir*sprayDist,player.y_dir*sprayDist];
     //console.log(sprayDir);
     myPlayer.spray = [player.x + sprayDir[0], player.y + sprayDir[1], new Date().getTime()];
+
     //if I want to base it off mouse but glitchy
     // let mapCenter = createVector(windowWidth/2, windowHeight/2);
     // //let mouseVec = getMouseVector(mapCenter);
@@ -438,7 +439,7 @@ function wallCollisions(players){
       if(btw(myPlayer.x + pr, wleft, wleft+error)){//coming from the left
         myPlayer.x = wleft - pr;
       }
-      else if(btw(myPlayer.x + pr, wright, wright+error)){//coming from the right
+      else if(btw(myPlayer.x, wright, wright+error)){//coming from the right
         myPlayer.x = wright + pr;
       }
     }
@@ -447,7 +448,7 @@ function wallCollisions(players){
       if(btw(myPlayer.y + pr, wTop, wTop+error)){//coming from the top going down
         myPlayer.y = wTop - pr;
       }
-      else if(btw(myPlayer.y + pr, wBottom, wBottom+error)){
+      else if(btw(myPlayer.y, wBottom, wBottom+error)){
         myPlayer.y = wBottom + pr;
       }
     }
@@ -512,10 +513,25 @@ function drawAll(){
 }
 
 
+function test(c){
+  //strokeWeight(10);
+  fill(c);
+  let divBy = 2*gs.zoomScale;
+  let mx = -mouseX + windowWidth/divBy;
+  let my = -mouseY + windowHeight/divBy;
+
+  original = createVector(myPlayer.x, myPlayer.y);
+  line(myPlayer.x, myPlayer.y, mouseX, mouseY);
+  ellipse(mouseX, mouseY,40,40);
+  //console.log(myPlayer.x,myPlayer.y, mouseX, mouseY);
+}
+
 //draw is actually an update function and drawFunc is where drawing is done
 function draw() {  
   background(33,35,42);
+  //test(color('green'));
   followPlayer(myPlayer);
+  //test(color('black'));
   playerInput();
   movePlayers();//move player must be called before drawing and colliding with static object such as walls Otherwise the walls would move respective to the player
   drawAll();
